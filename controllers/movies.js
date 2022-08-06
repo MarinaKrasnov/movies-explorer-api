@@ -41,14 +41,15 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params._id)
+  const { movieId } = req.params;
+  Movie.findById(movieId)
     .then((movie) => {
       if (!movie) {
         next(new NotFoundError('Карточка по указанному id не найдена'));
-      } else if (req.user._id !== Movie.owner.toString()) {
+      } else if (req.user.id !== movie.owner.toString()) {
         next(new ForbidError('У вас нет прав на удаление'));
       }
-      return Movie.findByIdAndRemove(req.params._id)
+      return Movie.findByIdAndRemove(movieId)
         .then((movieObj) => res.status(200).send({ data: movieObj })).catch(next);
     }).catch(next);
 };

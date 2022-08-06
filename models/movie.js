@@ -29,7 +29,7 @@ const movieSchema = new mongoose.Schema({
   image: {
     type: String,
     required: [true, 'Поле должно быть заполнено'],
-     validate: {
+    validate: {
       validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
       message: 'Нужно ввести ссылку',
     },
