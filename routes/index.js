@@ -1,14 +1,14 @@
-const router = require('express').Router();
 const {
   celebrate, Joi,
 } = require('celebrate');
+const router = require('express').Router();
 const auth = require('../middlewares/auth');
-const { createUser, login } = require('../controllers/users');
 const MovieRouter = require('./movies');
 const UserRouter = require('./users');
+const { createUser, login } = require('../controllers/users');
 
 router.use('/movies', auth, MovieRouter);
-router.use('/users', UserRouter);
+router.use('/users', auth, UserRouter);
 
 router.post(
   '/signup',

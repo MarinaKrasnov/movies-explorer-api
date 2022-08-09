@@ -6,6 +6,11 @@ const NotFoundError = require('../errors/not-found-error');
 const UnauthorizedError = require('../errors/unauth');
 const User = require('../models/user');
 
+module.exports.getUsers = (req, res, next) => {
+  User.find()
+    .then((users) => res.status(200).send(users))
+    .catch(next);
+};
 module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
@@ -19,7 +24,7 @@ module.exports.getUserById = (req, res, next) => {
     .catch(next);
 };
 module.exports.getUser = (req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
   User.findById(userId)
     .then((user) => {
       if (!user) {

@@ -26,7 +26,7 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
 app.use(requestLogger);
 
 app.use('/', router);
-app.use('*', /* auth, */ () => {
+app.use('*', () => {
   throw new NotFoundError('Not found');
 });
 app.use(errorLogger);
