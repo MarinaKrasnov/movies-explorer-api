@@ -1,0 +1,5 @@
+NODE_ENV=production
+PORT=3000
+JWT_SECRET=eb28135ebc
+URL_DB=mongodb://localhost:27017/moviesdb
+URLS_FOR_CORS=['http://localhost:3000', 'https://localhost:3000', 'http://catalog.nomoredomains.sbs', 'https://catalog.nomoredomains.sbs', 'http://api.catalog.nomoredomains.sbs', 'https://api.catalog.nomoredomains.sbs', 'api.catalog.nomoredomains.sbs', 'catalog.nomoredomains.sbs']

@@ -2,7 +2,7 @@ const BadRequestError = require('../errors/bad-request-err');
 const ForbidError = require('../errors/forbid-err');
 const NotFoundError = require('../errors/not-found-error');
 const Movie = require('../models/movie');
-const ERROR_MESSAGES = require('../utils/constants');
+const { ERROR_MESSAGES } = require('../utils/constants');
 
 module.exports.getMovies = (req, res, next) => {
   const owner = req.user.id;
@@ -40,15 +40,15 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-  Movie.findById(movieId)
+  const { _id } = req.params;
+  Movie.findById(_id)
     .then((movie) => {
       if (!movie) {
         return next(new NotFoundError(ERROR_MESSAGES.notFound));
       } if (req.user.id !== movie.owner.toString()) {
         return next(new ForbidError(ERROR_MESSAGES.deleteMovie));
       }
-      return Movie.findByIdAndRemove(movieId)
+      return Movie.findByIdAndRemove(_id)
         .then((movieObj) => res.status(200).send({ data: movieObj })).catch(next);
     }).catch(next);
 };

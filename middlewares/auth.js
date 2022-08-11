@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/unauth');
 const { ERROR_MESSAGES } = require('../utils/constants');
 
-const auth = (req, _res, next) => {
+const auth = (req, res, next) => {
   const { cookies } = req;
   const { authorization } = req.headers;
-  if (cookies.jwt || authorization.startsWith('Bearer ')) {
+  if (cookies.jwt || authorization) {
     const token = cookies.jwt ? cookies.jwt : authorization.replace('Bearer ', '');
     let payload;
     try {

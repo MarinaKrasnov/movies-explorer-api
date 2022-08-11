@@ -27,3 +27,5 @@ build
         .pm2/
         .profile
         .ssh/
+         .pub
+        .bash_history

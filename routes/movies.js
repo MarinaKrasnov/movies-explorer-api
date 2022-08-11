@@ -11,7 +11,7 @@ MovieRouter.post(
   createMovie,
 );
 MovieRouter.delete(
-  '/:movieId',
+  '/:_id',
   validateDeleteMovie,
   deleteMovie,
 );

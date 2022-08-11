@@ -7,9 +7,6 @@ const NotFoundError = require('../errors/not-found-error');
 const { validateSignin, validateSignup } = require('../middlewares/validator');
 const { ERROR_MESSAGES } = require('../utils/constants');
 
-router.use('/movies', auth, MovieRouter);
-router.use('/users', auth, UserRouter);
-
 router.post(
   '/signup',
   validateSignup,
@@ -20,6 +17,9 @@ router.post(
   validateSignin,
   login,
 );
+router.use('/movies', auth, MovieRouter);
+router.use('/users', auth, UserRouter);
+
 router.post(
   '/signout',
   auth,

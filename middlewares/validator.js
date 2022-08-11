@@ -35,13 +35,12 @@ module.exports.validatePostMovie = celebrate({
     thumbnail: Joi.string().uri().required().pattern(ValidateUrl),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
-    owner: Joi.string().length(24).hex().required(),
   }),
 });
 
 module.exports.validateDeleteMovie = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().length(24).hex().required(),
+    _id: Joi.string().length(24).hex().required(),
   }),
 });
 

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const { MESSAGES } = require('../utils/constants');
+const {
+  MESSAGES,
+} = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -27,7 +29,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: [true, MESSAGES.input],
     validate: {
-      validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
+      validator: (value) => validator.isURL(value, {
+        protocols: ['http', 'https'],
+        require_tld: true,
+        require_protocol: true,
+      }),
       message: MESSAGES.url,
     },
   },
@@ -35,7 +41,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: [true, MESSAGES.input],
     validate: {
-      validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
+      validator: (value) => validator.isURL(value, {
+        protocols: ['http', 'https'],
+        require_tld: true,
+        require_protocol: true,
+      }),
       message: MESSAGES.url,
     },
   },
@@ -43,7 +53,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: [true, MESSAGES.input],
     validate: {
-      validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
+      validator: (value) => validator.isURL(value, {
+        protocols: ['http', 'https'],
+        require_tld: true,
+        require_protocol: true,
+      }),
       message: MESSAGES.url,
     },
   },
@@ -53,8 +67,8 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   movieId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'movie',
+    type: Number,
+    required: true,
   },
   nameRU: {
     type: String,
