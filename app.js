@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 /* const path = require('path'); */
 const cors = require('cors');
 const { errors } = require('celebrate');
-/* const helmet = require('helmet'); */
+const helmet = require('helmet');
 const router = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -24,7 +24,7 @@ app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 mongoose.connect(URL_MONGO);
-/* app.use(helmet()); */
+app.use(helmet());
 /* app.use(express.static(path.join(__dirname, 'build'))); */
 app.use(requestLogger);
 app.use(limiter);
