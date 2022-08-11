@@ -2,12 +2,12 @@ const BadRequestError = require('../errors/bad-request-err');
 const ForbidError = require('../errors/forbid-err');
 const NotFoundError = require('../errors/not-found-error');
 const Movie = require('../models/movie');
+const ERROR_MESSAGES = require('../utils/constants');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find()
-    .then((movies) => {
-      res.send(movies.slice(0, 29));
-    })
+  const owner = req.user.id;
+  Movie.find({ owner })
+    .then((movies) => res.send(movies))
     .catch(next);
 };
 
@@ -33,10 +33,9 @@ module.exports.createMovie = (req, res, next) => {
       res.status(201).send(movie);
     }).catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Некорректные данные'));
-      } else {
-        next(err);
+        return next(new BadRequestError(ERROR_MESSAGES.dataBadRequest));
       }
+      return next(err);
     });
 };
 
@@ -45,9 +44,9 @@ module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(movieId)
     .then((movie) => {
       if (!movie) {
-        next(new NotFoundError('Карточка по указанному id не найдена'));
-      } else if (req.user.id !== movie.owner.toString()) {
-        next(new ForbidError('У вас нет прав на удаление'));
+        return next(new NotFoundError(ERROR_MESSAGES.notFound));
+      } if (req.user.id !== movie.owner.toString()) {
+        return next(new ForbidError(ERROR_MESSAGES.deleteMovie));
       }
       return Movie.findByIdAndRemove(movieId)
         .then((movieObj) => res.status(200).send({ data: movieObj })).catch(next);

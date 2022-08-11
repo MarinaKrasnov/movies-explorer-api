@@ -1,53 +1,50 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { MESSAGES } = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
-    minlength: [2, 'Поле должно содержать не меньше двух символов'],
-    maxlength: [30, 'Поле должно содержать не меньше 30 символов'],
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
   director: {
     type: String,
-    minlength: [2, 'Поле должно содержать не меньше двух символов'],
-    maxlength: [30, 'Поле должно содержать не меньше 30 символов'],
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
   duration: {
     type: Number,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
   year: {
-    type: Number,
-    required: [true, 'Поле должно быть заполнено'],
+    type: String,
+    required: [true, MESSAGES.input],
   },
   description: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
   image: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
     validate: {
       validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
-      message: 'Нужно ввести ссылку',
+      message: MESSAGES.url,
     },
   },
   trailerLink: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
     validate: {
       validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
-      message: 'Нужно ввести ссылку',
+      message: MESSAGES.url,
     },
   },
   thumbnail: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
     validate: {
       validator: (value) => validator.isURL(value, { protocols: ['http', 'https'], require_tld: true, require_protocol: true }),
-      message: 'Нужно ввести ссылку',
+      message: MESSAGES.url,
     },
   },
   owner: {
@@ -61,15 +58,11 @@ const movieSchema = new mongoose.Schema({
   },
   nameRU: {
     type: String,
-    minlength: [2, 'Поле должно содержать не меньше двух символов'],
-    maxlength: [30, 'Поле должно содержать не меньше 30 символов'],
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
   nameEN: {
     type: String,
-    minlength: [2, 'Поле должно содержать не меньше двух символов'],
-    maxlength: [30, 'Поле должно содержать не меньше 30 символов'],
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MESSAGES.input],
   },
 });
 

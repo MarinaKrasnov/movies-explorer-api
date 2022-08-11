@@ -5,30 +5,14 @@ const ConflictError = require('../errors/conflict-err');
 const NotFoundError = require('../errors/not-found-error');
 const UnauthorizedError = require('../errors/unauth');
 const User = require('../models/user');
+const { ERROR_MESSAGES, MESSAGES } = require('../utils/constants');
 
-module.exports.getUsers = (req, res, next) => {
-  User.find()
-    .then((users) => res.status(200).send(users))
-    .catch(next);
-};
-module.exports.getUserById = (req, res, next) => {
-  const { _id } = req.params;
-  User.findById(_id)
-    .then((user) => {
-      if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
-      } else {
-        res.status(200).send(user);
-      }
-    })
-    .catch(next);
-};
 module.exports.getUser = (req, res, next) => {
   const _id = req.user.id;
   User.findById(_id)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError(ERROR_MESSAGES.userBadRequest));
       } else {
         res.status(200).send(user);
       }
@@ -42,7 +26,7 @@ module.exports.createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new ConflictError('Такой пользователь уже существует');
+        throw new ConflictError(ERROR_MESSAGES.signup);
       } else {
         return bcrypt.hash(password, 10);
       }
@@ -59,7 +43,7 @@ module.exports.createUser = (req, res, next) => {
         }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new BadRequestError('Некорректные данные'));
+            next(new BadRequestError(ERROR_MESSAGES.dataBadRequest));
           } else {
             next(err);
           }
@@ -68,36 +52,57 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { id } = req.user;
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(
-    id,
-    { $set: { name, about } },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
-      } else {
-        res.send(user);
-      }
-    })
-    .catch(next);
+  const { id, currentUserEmail } = req.user;
+  const { name, email } = req.body;
+  if (email !== currentUserEmail) {
+    User.findOne({ email })
+      .then((response) => {
+        if (response) {
+          return next(new ConflictError(ERROR_MESSAGES.userExists));
+        } return User.findByIdAndUpdate(
+          id,
+          { $set: { name, email } },
+          { new: true, runValidators: true },
+        )
+          .then((user) => {
+            if (!user) {
+              next(new NotFoundError(ERROR_MESSAGES.userBadRequest));
+            } else {
+              res.send(user);
+            }
+          })
+          .catch(next);
+      });
+  } else {
+    User.findByIdAndUpdate(
+      id,
+      { $set: { name, email } },
+      { new: true, runValidators: true },
+    )
+      .then((user) => {
+        if (!user) {
+          next(new NotFoundError(ERROR_MESSAGES.userBadRequest));
+        } else {
+          res.send(user);
+        }
+      })
+      .catch(next);
+  }
 };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findOne({ email }).select('+password').then((user) => {
     if (!user) {
-      return next(new UnauthorizedError('Пользователь не найден'));
+      return next(new UnauthorizedError(ERROR_MESSAGES.userBadRequest));
     }
     return bcrypt.compare(password, user.password)
       .then((matched) => {
         if (!matched) {
-          return next(new UnauthorizedError('Неправильные почта или пароль'));
+          return next(new UnauthorizedError(ERROR_MESSAGES.signin));
         }
         const token = jwt.sign({ id: user.id }, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-        res.header('authorization', `Bearer ${token}`);
+        /*   res.header('authorization', `Bearer ${token}`); */
         return res.cookie('jwt', token, { httpOnly: true, sameSite: true }).status(200).send({
           name: user.name,
           email: user.email,
@@ -107,4 +112,9 @@ module.exports.login = (req, res, next) => {
       })
       .catch(next);
   });
+};
+
+module.exports.signout = (req, res, next) => {
+  res.clearCookie('jwt').send({ message: MESSAGES.cookies });
+  next();
 };
