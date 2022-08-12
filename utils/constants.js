@@ -17,7 +17,7 @@ module.exports.ERROR_MESSAGES = {
 };
 
 module.exports.MESSAGES = {
-  cookies: 'Cookie has been deteled',
+  cookies: 'Cookie has been deleted',
   url: 'Url expected',
   input: 'Please fill',
 };

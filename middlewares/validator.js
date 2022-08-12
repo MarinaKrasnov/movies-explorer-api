@@ -35,6 +35,7 @@ module.exports.validatePostMovie = celebrate({
     thumbnail: Joi.string().uri().required().pattern(ValidateUrl),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
+    movieId: Joi.number().required(),
   }),
 });
 

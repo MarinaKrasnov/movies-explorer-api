@@ -96,7 +96,6 @@ module.exports.login = (req, res, next) => {
   });
 };
 
-module.exports.signout = (req, res, next) => {
+module.exports.signout = (req, res) => {
   res.clearCookie('jwt').send({ message: MESSAGES.cookies });
-  next();
 };
